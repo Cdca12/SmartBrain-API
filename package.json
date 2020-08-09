@@ -1,0 +1,26 @@
+{
+  "name": "SmartBrain-API",
+  "version": "1.0.0",
+  "description": "A RESTful API to work with the SmartBrain app, made with NodeJS and Express.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cdca12/SmartBrain-API.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Cdca12/SmartBrain-API/issues"
+  },
+  "homepage": "https://github.com/Cdca12/SmartBrain-API#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
