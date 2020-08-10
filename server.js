@@ -1,4 +1,5 @@
 const express = require("express");
+const bcrypt = require("bcryptjs");
 
 const app = express();
 
@@ -19,6 +20,13 @@ const database = {
             password: "sally123",
             entries: 0,
             joined: new Date()
+        }
+    ],
+    login: [
+        {
+            id: "5",
+            has: "",
+            username: "cdca"
         }
     ]
 }
@@ -55,18 +63,27 @@ app.post("/register", (req, res) => {
     let { name, username, password } = req.body;
     let lastID = Number(database.users[database.users.length - 1].id);
 
-    let user = {
-        id: (lastID + 1).toString(),
-        name: name,
-        username: username,
-        password: password,
-        entries: 0,
-        joined: new Date()
-    }
 
-    database.users.push(user);
+    bcrypt.hash(password, 10, (err, hash) => {
+        if (err) {
+            console.log("Bcrypt error!", err);
+        }
+        // Store hash in your password DB.
+        console.log(hash);
+    });
 
-    res.json(user);
+let user = {
+    id: (lastID + 1).toString(),
+    name: name,
+    username: username,
+    password: password,
+    entries: 0,
+    joined: new Date()
+}
+
+database.users.push(user);
+
+res.json(user);
 });
 
 app.get("/profile/:id", (req, res) => {
@@ -99,3 +116,25 @@ app.put("/image", (req, res) => {
 app.listen(3000, () => {
     console.log("App is running on port 3000");
 });
+
+
+// To hash a password
+
+
+
+
+
+// To check a password
+
+// Load hash from your password DB.
+// bcrypt.compare("B4c0/\/", hash, function (err, res) {
+//     // res === true
+// });
+// bcrypt.compare("not_bacon", hash, function (err, res) {
+//     // res === false
+// });
+
+// // As of bcryptjs 2.4.0, compare returns a promise if callback is omitted:
+// bcrypt.compare("B4c0/\/", hash).then((res) => {
+//     // res === true
+// });
