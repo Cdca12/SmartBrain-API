@@ -23,6 +23,11 @@ const database = {
     ]
 }
 
+const findUserById = (id) => {
+    id = id.toString();
+    return database.users.find(user => user.id === id);
+}
+
 // BodyParser
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -47,12 +52,11 @@ app.post("/signin", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
+    let { name, username, password } = req.body;
     let lastID = Number(database.users[database.users.length - 1].id);
 
-    let { name, username, password } = req.body;
-
     let user = {
-        id: (lastID + 1),
+        id: (lastID + 1).toString(),
         name: name,
         username: username,
         password: password,
@@ -63,25 +67,35 @@ app.post("/register", (req, res) => {
     database.users.push(user);
 
     res.json(user);
-    // res.send("Signed up succesfuly!");
 });
 
+app.get("/profile/:id", (req, res) => {
+    let user = findUserById(req.params.id);
+
+    if (!user) {
+        res.status(404).send("Can't find an user with that ID!");
+        return;
+    }
+    res.json(user);
+});
 
 // Test and GET all database
 app.get("/test", (req, res) => {
     res.json(database);
 });
 
+app.put("/image", (req, res) => {
+    let user = findUserById(req.body.id);
+
+    if (!user) {
+        res.status(404).send("Can't find an user with that ID!");
+        return;
+    }
+    user.entries++;
+    res.json(user);
+
+});
 
 app.listen(3000, () => {
     console.log("App is running on port 3000");
 });
-
-
-/*
-/ --> res = this is working                 OK
-/signin     --> POST = success/fail         OK
-/register   --> POST = user                 OK
-/profile/:userId --> GET = user
-/image --> PUT --> user (count)
-*/
