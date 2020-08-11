@@ -1,5 +1,6 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
+const cors = require("cors");
 
 const app = express();
 
@@ -31,17 +32,20 @@ const database = {
     ]
 }
 
+// BodyParser
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+
+app.use(cors());
+
 const findUserById = (id) => {
     id = id.toString();
     return database.users.find(user => user.id === id);
 }
 
-// BodyParser
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
-
+// Test and GET all database users
 app.get("/", (req, res) => {
-    res.send("This is working");
+    res.json(database.users);
 });
 
 app.post("/signin", (req, res) => {
@@ -72,18 +76,18 @@ app.post("/register", (req, res) => {
         console.log(hash);
     });
 
-let user = {
-    id: (lastID + 1).toString(),
-    name: name,
-    username: username,
-    password: password,
-    entries: 0,
-    joined: new Date()
-}
+    let user = {
+        id: (lastID + 1).toString(),
+        name: name,
+        username: username,
+        password: password,
+        entries: 0,
+        joined: new Date()
+    }
 
-database.users.push(user);
+    database.users.push(user);
 
-res.json(user);
+    res.json(user);
 });
 
 app.get("/profile/:id", (req, res) => {
@@ -94,11 +98,6 @@ app.get("/profile/:id", (req, res) => {
         return;
     }
     res.json(user);
-});
-
-// Test and GET all database
-app.get("/test", (req, res) => {
-    res.json(database);
 });
 
 app.put("/image", (req, res) => {
@@ -121,9 +120,6 @@ app.listen(3000, () => {
 // To hash a password
 
 
-
-
-
 // To check a password
 
 // Load hash from your password DB.
@@ -138,3 +134,7 @@ app.listen(3000, () => {
 // bcrypt.compare("B4c0/\/", hash).then((res) => {
 //     // res === true
 // });
+
+
+
+// TODO, full implement bcrypt, hash password and search id to find hash en signin successfuly
