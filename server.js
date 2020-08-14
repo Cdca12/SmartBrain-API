@@ -35,12 +35,19 @@ const database = {
 // BodyParser
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-
 app.use(cors());
 
 const findUserById = (id) => {
     id = id.toString();
     return database.users.find(user => user.id === id);
+}
+
+const findUser = (username, password) => {
+    let user = database.users.find(user => {
+        return username.toLowerCase() === user.username.toLowerCase()
+            && password === user.password
+    });
+    return user;
 }
 
 // Test and GET all database users
@@ -49,16 +56,12 @@ app.get("/", (req, res) => {
 });
 
 app.post("/signin", (req, res) => {
-    let userExists = database.users.some(user => {
-        return req.body.username.toLowerCase() === user.username.toLowerCase()
-            && req.body.password === user.password
-    }
-    );
+    let user = findUser(req.body.username, req.body.password);
 
-    if (userExists) {
-        res.json("Login Success!");
-    } else {
+    if (!user) {
         res.status(400).json("Login error");
+    } else {
+        res.json(user);
     }
 
 });
@@ -85,7 +88,10 @@ app.post("/register", (req, res) => {
         joined: new Date()
     }
 
+    // TODO: Que la respuesta no contenga password
+
     database.users.push(user);
+    delete user.password;
 
     res.json(user);
 });
