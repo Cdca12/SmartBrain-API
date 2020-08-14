@@ -113,8 +113,8 @@ app.put("/image", (req, res) => {
         res.status(404).send("Can't find an user with that ID!");
         return;
     }
-    user.entries++;
-    res.json(user);
+    ;
+    res.json(++user.entries);
 
 });
 
