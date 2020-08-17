@@ -1,41 +1,34 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const cors = require("cors");
+const knex = require("knex");
 
 const app = express();
-
-const database = {
-    users: [
-        {
-            id: "1",
-            name: "Carlos",
-            username: "Cdca",
-            password: "admin",
-            entries: 0,
-            joined: new Date()
-        },
-        {
-            id: "2",
-            name: "Sally",
-            username: "sallygh",
-            password: "sally123",
-            entries: 0,
-            joined: new Date()
-        }
-    ],
-    login: [
-        {
-            id: "5",
-            has: "",
-            username: "cdca"
-        }
-    ]
-}
 
 // BodyParser
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cors());
+
+// PostgreSQL
+const db = knex({
+    client: 'pg',
+    connection: {
+        host: '127.0.0.1', // Localhost for now
+        user: 'postgres',
+        password: 'Admin$123',
+        database: 'smartbrain'
+    }
+});
+
+
+db.select('*').from('users')
+    .then(data => {
+        console.log(data);
+    })
+
+
+
 
 const findUserById = (id) => {
     id = id.toString();
